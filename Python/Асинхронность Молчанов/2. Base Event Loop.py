@@ -1,34 +1,42 @@
 """
+Реализация простейшего Event Loop
 https://www.youtube.com/watch?v=g6xvW2FOuPw&list=PLlWXhlUMyooawilqK4lPXRvxtbYiw34S8&index=2&ab_channel=OlegMolchanov
 """
 import socket
+from select import select
 
-server_socker = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server_socker.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-server_socker.bind(('localhost', 5000))
-server_socker.listen()
+# Список файлов для мониторинга
+to_monitor = []
 
-def accept_connection(server_socker):
-    while True:
-        print("Before .accept()")
-        client_socket, addr = server_socker.accept()
-        print('Connection from', addr)
-        send_message(client_socket)
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+server_socket.bind(('localhost', 5000))
+server_socket.listen()
 
-        client_socket.close()
+def accept_connection(sc):
+    client_socket, addr = sc.accept()
+    print("Connection from", addr)
+    to_monitor.append(client_socket)
 
 def send_message(client_socket):
+    request = client_socket.recv(4096)
+
+    if request:
+        response = "Hello world\n".encode()
+        client_socket.send(response)
+    else:
+        client_socket.close()
+
+def event_loop():
     while True:
-        print("Before .recv()")
-        request = client_socket.recv(4096)
+        ready_to_read, _, _ = select(to_monitor, [], [])
 
-        if not request:
-            break
-        else:
-            response = "Hello world\n".encode()
-            client_socket.send(response)
-
-
+        for sock in ready_to_read:
+            if sock is server_socket:
+                accept_connection(sock)
+            else: # Предположительно клиентский сокет, который мы добавили в функции accept_connection
+                send_message(sock)
 
 if __name__ == "__main__":
-    accept_connection(server_socker)
+    to_monitor.append(server_socket)
+    event_loop()
