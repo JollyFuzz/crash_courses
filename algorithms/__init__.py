@@ -6,7 +6,8 @@ local_path = Path(__file__).parent.parent
 
 sys.path.append(str(local_path))
 
-from algorithms.bubble import bubble_sort
+from algorithms.bubble_sort import bubble_sort
+from algorithms.insertion_sort  import insertion_sort
 
 def check_correct(a):
     """Проверка отсортированного массива"""
@@ -82,4 +83,4 @@ def test_sort_algorith(f):
         print(f"{i} - {result} - {(end_time - start_time)} sec - {case} -> {sorted_a}")
 
 if __name__ == "__main__":
-    test_sort_algorith(bubble_sort)
+    test_sort_algorith(insertion_sort)
