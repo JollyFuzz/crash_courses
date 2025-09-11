@@ -3,6 +3,7 @@ def coroutine(func):
         g = func(*args, **kwargs)
         g.send(None)
         return g
+
     return inner
 
 
@@ -11,11 +12,12 @@ def subgen():
     message = yield start_message
     print("Sungen received:", message)
 
+
 @coroutine
 def calculate_average():
     count = 0
     summ = 0
-    average = None 
+    average = None
 
     while True:
         try:
@@ -41,4 +43,3 @@ if __name__ == "__main__":
         g.throw(StopIteration)
     except StopIteration as e:
         print(f"Average {e.value}")
-    

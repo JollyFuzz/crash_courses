@@ -1,5 +1,7 @@
 """Простейший генератор"""
+
 from time import time
+
 
 def gen(s):
     for i in s:

@@ -3,6 +3,7 @@
 David BeasLey на 2015 PyCon
 Переведено Игорем Стариковым
 """
+
 import socket
 from select import select
 
@@ -13,45 +14,46 @@ tasks = []
 to_read = {}
 to_write = {}
 
+
 def server():
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    server_socket.bind(('localhost', 5001))
+    server_socket.bind(("localhost", 5001))
     server_socket.listen()
 
     while True:
-        
+
         # Прерываем выполнение функции, т.е. прием соединения
         # Пока функция-генератор не будет вызвана явно
-        yield ('read', server_socket) 
-        client_socket, addr = server_socket.accept() # read
-        
-        print('Connection from', addr)
+        yield ("read", server_socket)
+        client_socket, addr = server_socket.accept()  # read
+
+        print("Connection from", addr)
         # В список задач добавляем функцию-генератор для клиента
         tasks.append(client(client_socket))
 
 
 def client(client_socket):
     while True:
-        
+
         # Прерываем выполнение функции, т.е. чтение сообщения
         # Пока функция-генератор не будет вызвана явно для продолжения чтения
-        yield ('read', client_socket)
-        request = client_socket.recv(4096) # read
+        yield ("read", client_socket)
+        request = client_socket.recv(4096)  # read
 
         if not request:
             break
         else:
             response = "Hello, \n".encode()
-            
+
             # Прерываем выполнение функции, т.е. отправку сообщения
             # Пока функция-генератор не будет вызвана явно для продолжения отправки
             # Это прерывание необязательно, можно сразу после чтения отправить ответ
             # Я закомментировала и проверила, будет работать
-            # Думаю, что в этом примере это было сделано с демоцелью, 
+            # Думаю, что в этом примере это было сделано с демоцелью,
             # т.к. мы разделяяем "потоки" на чтение и запись
-            yield ('write', client_socket)
-            client_socket.send(response) # write
+            yield ("write", client_socket)
+            client_socket.send(response)  # write
 
     client_socket.close()
 

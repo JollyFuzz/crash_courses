@@ -3,10 +3,12 @@ def coroutine(func):
         g = func(*args, **kwargs)
         g.send(None)
         return g
+
     return inner
 
-class BlaBlaExcpetion(Exception):
-    ...
+
+class BlaBlaExcpetion(Exception): ...
+
 
 @coroutine
 def subgen():
@@ -17,6 +19,7 @@ def subgen():
             print("I see your BlaBla")
         else:
             print("......", message)
+
 
 @coroutine
 def delegator(g):

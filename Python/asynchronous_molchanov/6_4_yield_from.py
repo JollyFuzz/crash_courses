@@ -3,10 +3,12 @@ def coroutine(func):
         g = func(*args, **kwargs)
         g.send(None)
         return g
+
     return inner
 
-class BlaBlaExcpetion(Exception):
-    ...
+
+class BlaBlaExcpetion(Exception): ...
+
 
 # Тут нет инициализирующего декоратора, т.к. генератор будет проинициализирован при помощи yield from
 def subgen():
@@ -21,6 +23,7 @@ def subgen():
             print("......", message)
 
     return "Returned from subgen()"
+
 
 @coroutine
 def delegator(g):

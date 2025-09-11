@@ -1,14 +1,16 @@
 from inspect import getgeneratorstate
 
+
 def subgen():
     start_message = "Welcome"
     message = yield start_message
     print("Sungen received:", message)
 
+
 def average():
     count = 0
     summ = 0
-    average = None 
+    average = None
 
     while True:
         try:
@@ -35,7 +37,6 @@ if __name__ == "__main__":
     result = g.send(13)
     print(result)
     print(getgeneratorstate(g))
-
 
     result = g.throw(StopIteration)
     print(result)
